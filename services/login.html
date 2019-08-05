@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<head>
+    <title>OTP Validation</title>
+    <meta charset="utf-8">
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script> 
+    <script>
+    let email_valid = '' , otp = '' , password = '' , cpassword = '';
+    const loadpage = () =>{
+        document.getElementById('email_div').style.display = "block";
+        document.getElementById('otp_div').style.display = "none";
+        document.getElementById('password_div').style.display = "none";
+    }
+    const generateotp = () =>{
+        email_valid = document.getElementById('email').value;
+        const e_url = 'http://localhost:1269/register/sendmail';
+        fetch(e_url,{
+                method : 'POST',
+                headers : {
+                    'content-type' : 'application/json'
+                },
+                body : JSON.stringify({
+                    email : email_valid
+            })
+        })
+        document.getElementById('generateotp').style.display = "none";
+        document.getElementById('otp_div').style.display = "block";
+    }
+    const verifyotp = () =>{
+        otp = document.getElementById('otp').value;
+        document.getElementById("email").readOnly = true;
+        const o_url = 'http://localhost:1269/register/otpverify';
+        fetch(o_url,{
+            method : 'POST',
+            headers : {
+                'content-type' : 'application/json'
+            },
+            body : JSON.stringify({
+                otp : otp
+        })
+    })
+    document.getElementById('verifyotp').style.display = "none";
+    document.getElementById('password_div').style.display = "block";
+    }
+    const savepassword = () =>{
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+        var cpassword = document.getElementById('cpassword').value;
+        var p_url = 'http://localhost:1269/register/passwordverifify';
+        if(password == cpassword){
+            fetch(p_url,{
+                method : 'POST',
+                headers : {
+                    'content-type' : 'application/json'
+                },
+                body : JSON.stringify({
+                    email : email,
+                    password : password
+            })
+        })
+        }
+        else{
+            document.getElementById('password').value = '';
+            document.getElementById('cpassword').value = '';
+            alert("Passwords doesnot match???");
+            document.getElementById('password').focus();
+        }
+    }
+    </script>
+    <style>
+    body{
+        margin: 30px;
+    }
+    </style>
+</head>
+
+<body onload="loadpage()">
+    <div class="card">
+        <div class="card-body">
+            <div id="email_div">
+                <div class="form-group row">
+                    <label for="email" class="col-sm-2 col-form-label">Email</label>
+                    <div class="col-sm-10">
+                        <input type="email" class="form-control" id="email" placeholder="Email..." required>
+                    </div>
+                </div>
+                <div class="col-sm-10">
+                    <button type="submit" class="btn btn-primary" onclick="generateotp()" id="generateotp">Submit</button>
+                </div>
+            </div>
+            <div id="otp_div">
+                <div class="form-group row">
+                    <label for="otp" class="col-sm-2 col-form-label">OTP</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="otp" placeholder="OTP..." required>
+                    </div>
+                </div>
+                <div class="col-sm-10">
+                    <button type="submit" class="btn btn-primary" onclick="verifyotp()" id="verifyotp">Verify</button>
+                </div>
+            </div>
+            <div id="password_div">
+                <div class="form-group row">
+                    <label for="password" class="col-sm-2 col-form-label">Password</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" id="password" placeholder="Password..." required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="cpassword" class="col-sm-2 col-form-label">Confirm Password</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" id="cpassword" placeholder="Confirm Password..." required>
+                    </div>
+                </div>
+                <div class="col-sm-10">
+                    <button type="submit" class="btn btn-primary" onclick="savepassword()" id="savepassword">Login</button>
+                </div>        
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
